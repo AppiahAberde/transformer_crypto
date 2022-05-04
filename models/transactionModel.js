@@ -7,9 +7,10 @@ function model(sequelize) {
         merchantRef: { type: DataTypes.STRING, unique: true },
         address: { type: DataTypes.STRING },
         amount: { type: DataTypes.STRING },
-        btcValueInvoiced: { type: DataTypes.INTEGER(32, 8) },
-        btcValuePaid: { type: DataTypes.INTEGER(32, 8) },
+        btcValueInvoiced: { type: DataTypes.DECIMAL(32, 8), defaultValue: 0 },
+        btcValuePaid: { type: DataTypes.DECIMAL(32, 8), defaultValue: 0 },
         status: { type: DataTypes.ENUM('initiated', 'unpaid', 'pending', 'completed') },
+        confirmations: { type: DataTypes.INTEGER, defaultValue: 0},
         expires: { type: DataTypes.DATE },
         isExpired: {
             type: DataTypes.VIRTUAL,
