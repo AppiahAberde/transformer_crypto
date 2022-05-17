@@ -11,7 +11,10 @@ function model(sequelize) {
         btcValuePaid: { type: DataTypes.DECIMAL(32, 8), defaultValue: 0 },
         status: { type: DataTypes.ENUM('initiated', 'unpaid', 'pending', 'completed') },
         confirmations: { type: DataTypes.INTEGER, defaultValue: 0},
+        blockHash: {type: DataTypes.STRING},
+        txID: { type: DataTypes.STRING},
         expires: { type: DataTypes.DATE },
+
         isExpired: {
             type: DataTypes.VIRTUAL,
             get() { return Date.now() >= this.expires }
