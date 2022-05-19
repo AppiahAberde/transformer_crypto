@@ -16,12 +16,22 @@ async function notifier() {
                 address: details[0].address
             }
         })
-        if (transaction) {
+        if (transaction && !transaction.isExpired) {
             transaction.txID = txID
             transaction.btcValuePaid = amount
             transaction.confirmations = confirmations
             transaction.blockHash = blockhash
             transaction.status = "pending"
+            if (transaction.btcValueInvoiced == amount ) {
+                transaction.paymentState = "full"
+                await transaction.save()
+            } else if (transaction.btcValueInvoiced > amount) {
+                transaction.paymentState = "part"
+                await transaction.save()
+            } else {
+                transaction.paymentState = 'over'
+                await transaction.save()
+            }
             await transaction.save()
         } else {
             console.log('no transaction found')

@@ -10,6 +10,7 @@ function model(sequelize) {
         btcValueInvoiced: { type: DataTypes.DECIMAL(32, 8), defaultValue: 0 },
         btcValuePaid: { type: DataTypes.DECIMAL(32, 8), defaultValue: 0 },
         status: { type: DataTypes.ENUM('initiated', 'unpaid', 'pending', 'completed') },
+        paymentState:{ type: DataTypes.ENUM('part', 'full', 'over')},
         confirmations: { type: DataTypes.INTEGER, defaultValue: 0},
         blockHash: {type: DataTypes.STRING},
         txID: { type: DataTypes.STRING},
