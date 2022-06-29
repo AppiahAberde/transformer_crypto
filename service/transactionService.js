@@ -3,6 +3,7 @@ const { Op } = require('sequelize')
 const exec = util.promisify(require('child_process').exec)
 const db = require('../helpers/db')
 const axios = require('axios')
+require('dotenv').config()
 
 module.exports = {
     initiate,
@@ -20,7 +21,7 @@ async function initiate(params) {
         if (!transaction) {
             const transaction = new db.Transaction(params)
             transaction.btcValueInvoiced = await btcValueInvoiced(amount)
-            transaction.expires = new Date(Date.now() + 20 * 60 * 1000)
+            transaction.expires = new Date(Date.now() + 10 * 60 * 1000)
             transaction.address = await generateAddress()
             transaction.status = 'initiated'
             await transaction.save()
@@ -57,7 +58,7 @@ async function btcValueInvoiced(amount) {
 
 async function getBtcValue() {
     try {
-        const { data } = await axios.get("https://portal.ekiosk.africa/api/rates/bitcoin")
+        const { data } = await axios.get(process.env.RATE_URL)
         return data.data.price
     } catch (error) {
         console.log(error)
@@ -94,7 +95,7 @@ async function getConfirmation() {
             let { confirmations } = JSON.parse(stdout)
             transaction.confirmations = confirmations
             await transaction.save()
-            if (transaction.confirmations >= 6) {
+            if (transaction.confirmations >= 6 && transaction.status !== 'suspect') {
                 transaction.status = "completed"
                 transaction.doneAt = Date.now()
                 await transaction.save()
@@ -108,4 +109,4 @@ async function getConfirmation() {
 
 setInterval(() => {
     getConfirmation()
-}, 60 * 1000);
+},  60 * 1000);

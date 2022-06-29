@@ -16,25 +16,70 @@ async function notifier() {
                 address: details[0].address
             }
         })
-        if (transaction && !transaction.isExpired) {
-            transaction.txID = txID
-            transaction.btcValuePaid = amount
-            transaction.confirmations = confirmations
-            transaction.blockHash = blockhash
-            transaction.status = "pending"
-            if (transaction.btcValueInvoiced == amount ) {
-                transaction.paymentState = "full"
+        switch (true) {
+            case ((transaction) && (transaction.isExpired) && (!transaction.txID) && (transaction.btcValueInvoiced == amount)):
+                transaction.txID = txID
+                transaction.btcValuePaid = amount
+                transaction.confirmations = confirmations
+                transaction.blockHash = blockhash
+                transaction.status = 'suspect'
+                transaction.paymentState = 'full'
                 await transaction.save()
-            } else if (transaction.btcValueInvoiced > amount) {
-                transaction.paymentState = "part"
+                break;
+            case ((transaction) && (transaction.isExpired) && (!transaction.txID) && (transaction.btcValueInvoiced > amount)):
+                transaction.txID = txID
+                transaction.btcValuePaid = amount
+                transaction.confirmations = confirmations
+                transaction.blockHash = blockhash
+                transaction.status = 'suspect'
+                transaction.paymentState = 'underpayment'
                 await transaction.save()
-            } else {
-                transaction.paymentState = 'over'
+                break;
+            case ((transaction) && (transaction.isExpired) && (!transaction.txID) && (transaction.btcValueInvoiced < amount)):
+                transaction.txID = txID
+                transaction.btcValuePaid = amount
+                transaction.confirmations = confirmations
+                transaction.blockHash = blockhash
+                transaction.status = 'suspect'
+                transaction.paymentState = 'overpayment'
                 await transaction.save()
-            }
-            await transaction.save()
-        } else {
-            console.log('no transaction found')
+                break;
+            case ((transaction) && (transaction.btcValueInvoiced == amount) && (transaction.status !== "suspect")):
+                transaction.txID = txID
+                transaction.btcValuePaid = amount
+                transaction.confirmations = confirmations
+                transaction.blockHash = blockhash
+                transaction.status = 'pending'
+                transaction.paymentState = 'full'
+                await transaction.save()
+                break;
+            case ((transaction) && (transaction.btcValueInvoiced > amount) && (transaction.status !== "suspect")):
+                transaction.txID = txID
+                transaction.btcValuePaid = amount
+                transaction.confirmations = confirmations
+                transaction.blockHash = blockhash
+                transaction.status = 'pending'
+                transaction.paymentState = 'underpayment'
+                await transaction.save()
+                break;
+            case ((transaction) && (transaction.btcValueInvoiced < amount) && (transaction.status !== "suspect")):
+                transaction.txID = txID
+                transaction.btcValuePaid = amount
+                transaction.confirmations = confirmations
+                transaction.blockHash = blockhash
+                transaction.status = 'pending'
+                transaction.paymentState = 'overpayment'
+                await transaction.save()
+                break;
+            case (!transaction):
+                console.log(" Transaction not found ")
+            default:
+                transaction.txID = txID
+                transaction.btcValuePaid = amount
+                transaction.confirmations = confirmations
+                transaction.blockHash = blockhash
+                await transaction.save()
+                break;
         }
     } catch (error) {
         console.log(error)
