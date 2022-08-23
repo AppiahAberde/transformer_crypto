@@ -7,7 +7,9 @@ require('dotenv').config()
 
 module.exports = {
     initiate,
-    status
+    status,
+    send,
+    validateAddress
 }
 
 async function initiate(params) {
@@ -74,6 +76,17 @@ async function generateAddress() {
     }
 }
 
+async function validateAddress(address) {
+    try {
+        const { stdout } = await exec(`bitcoin-cli validateaddress ${address}`)
+        const result = JSON.parse(stdout)
+        const { isvalid } = result
+        return isvalid
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 function basicDetails(params) {
     const { id, btcValueInvoiced, amount, address, status, confirmations, expires } = params
     return { id, btcValueInvoiced, amount, address, status, confirmations, expires }
@@ -107,6 +120,32 @@ async function getConfirmation() {
     }
 }
 
+async function send(params) {
+    const { address, amount } = params
+    try {
+        var { stdout } = await exec('bitcoin-cli -rpcwallet=test1 getbalance')
+        let balance = stdout.trim()
+        if (parseFloat(amount) > parseFloat(balance)) return " No enough balance"
+        /**check balance in the wallet and when it is enough you do the withdrawal  */
+        const isValid = await validateAddress(address)
+        if (isValid == false) return "Address not valid"
+        const sendTx = new db.Transaction(params)
+        sendTx.status = 'initiated'
+        sendTx.createdAt = Date.now()
+        await sendTx.save()
+        /**Do db insertion and then save  */
+        var { stdout } = await exec(`bitcoin-cli -rpcwallet=test1 sendtoaddress "${address}" ${amount} "drinks" "room77" true true null "unset" null 1.1`)
+        sendTx.txID =  stdout.trim()
+        sendTx.updatedAt = Date.now()
+        await sendTx.save()
+        /**update db with transaction txID and then mark as pending  */
+        //const stdout = await exec(`bitcoin-cli -rpcwallet=test1 sendtoaddress '${address}' ${amount} 'drinks' 'room77' true true null 'unset' null 1.1 `)
+        console.log(sendTx)
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 setInterval(() => {
     getConfirmation()
-},  60 * 1000);
+}, 60 * 1000);

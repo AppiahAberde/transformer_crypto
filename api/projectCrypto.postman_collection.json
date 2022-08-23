@@ -1,0 +1,232 @@
+{
+	"info": {
+		"_postman_id": "6b20e3c8-39a6-43e2-a9ac-a45f83e43823",
+		"name": "projectCrypto",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "8437999"
+	},
+	"item": [
+		{
+			"name": "Initiate",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let merchantRef = merchantRef + 1\r",
+							"pm.globals.set(\"merchantRef\", merchantRef);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"merchantRef\": \"{{merchantRef}}\",\r\n    \"amount\": \"1500\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:4000/api/initiate",
+					"host": [
+						"localhost"
+					],
+					"port": "4000",
+					"path": [
+						"api",
+						"initiate"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "success",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"merchantRef\": \"145787\",\r\n    \"amount\": \"5\"\r\n}\r\n\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/api/initiate",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"api",
+								"initiate"
+							]
+						}
+					},
+					"status": "Created",
+					"code": 201,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "Access-Control-Allow-Credentials",
+							"value": "true"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "184"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"b8-4wFEswnxy180TpESqFSFZ00HwL4\""
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 23 Aug 2022 12:03:23 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"id\": 1,\n    \"btcValueInvoiced\": \"0.00002238\",\n    \"amount\": \"5\",\n    \"address\": \"bc1qhr2w94vgmhtkz7dqwhhry0kcwr8rvpue0ea0sq\",\n    \"status\": \"initiated\",\n    \"confirmations\": 0,\n    \"expires\": \"2022-08-23T12:13:22.659Z\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Status check",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "193.194.163.53:4000/api/statuscheck/1457871",
+					"host": [
+						"193",
+						"194",
+						"163",
+						"53"
+					],
+					"port": "4000",
+					"path": [
+						"api",
+						"statuscheck",
+						"1457871"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "success",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseurl}}/api/statuscheck/{{merchantRef}}",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"api",
+								"statuscheck",
+								"{{merchantRef}}"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "Access-Control-Allow-Credentials",
+							"value": "true"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "410"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"19a-XljOPKZ8YiwHMbk3srdCxaQy1Ow\""
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 23 Aug 2022 12:31:42 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"isExpired\": true,\n    \"isActive\": false,\n    \"id\": 1,\n    \"merchantRef\": \"145787\",\n    \"address\": \"bc1qhr2w94vgmhtkz7dqwhhry0kcwr8rvpue0ea0sq\",\n    \"amount\": \"5\",\n    \"btcValueInvoiced\": \"0.00002238\",\n    \"btcValuePaid\": \"0.00000000\",\n    \"status\": \"initiated\",\n    \"paymentState\": null,\n    \"confirmations\": 0,\n    \"blockHash\": null,\n    \"txID\": null,\n    \"expires\": \"2022-08-23T12:13:22.000Z\",\n    \"doneAt\": null,\n    \"createdAt\": \"2022-08-23T12:03:22.000Z\",\n    \"updatedAt\": \"2022-08-23T12:03:22.000Z\"\n}"
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "url",
+			"value": "http://193.194.163.53:4000/api",
+			"type": "string"
+		}
+	]
+}

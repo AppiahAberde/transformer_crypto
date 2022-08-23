@@ -1,11 +1,12 @@
 const { argv } = require('process')
 const util = require('util')
 const exec = util.promisify(require('child_process').exec)
-const db = require('../helpers/db')
+const initDB = require('../helpers/dbInit')
 
 notifier();
 
-async function notifier() {
+async function notifier() {   
+    const db = await initDB()
     const txID = argv[2]
     try {
         const { stdout } = await exec(`bitcoin-cli -rpcwallet=test gettransaction ${txID}`)
