@@ -12,6 +12,8 @@ This transformer is used to invoice in bitcoin
     - validate-request.js
   + Model
     - transactionModel.js
+  + notifier
+    - notifier.js ( path should be added in bitcoin.conf file section walletnotify eg node < path/to/file/notifier.js>)
   + Service
     - transactionService.js 
   - Config.json
@@ -55,7 +57,7 @@ These are function found in the ` transactionService.js ` file.
 ---
 
 
- > ## Api Routed 
+ <!-- > ## Api Routed 
 
   1.  ### Initiate Transaction
    | Function | Details                                                                                          |
@@ -175,7 +177,7 @@ These are function found in the ` transactionService.js ` file.
 ``` 
 ---
 
- *** Please note debit can be done to all networks *** 
+ *** Please note debit can be done to all networks ***  -->
 
  
 
